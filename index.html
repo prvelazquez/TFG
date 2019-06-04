@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <title>FilmView</title>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/styles.css">
+
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navegacion">
+                            <span class="sr-only">Desplegar / Ocultar Menu</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="./index.html" class="navbar-brand">FilmView</a>
+                    </div>
+                    <!-- Inicia Menu -->
+                    <div class="collapse navbar-collapse" id="navegacion">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="./index.html">Inicio</a></li>
+                            <li><a href="./access.html" id="button_access_no_logged">Acceso</a></li>
+                        </ul>
+                        <form action="" class="navbar-form navbar-right" role="search">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Buscar película" id="texto_busqueda_titulo">
+                                </div>
+                                <button type="button" class="btn btn-primary" id="boton_buscar">
+                                    Buscar
+                                </button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <section class="jumbotron">
+            <div class="container">
+                <img class="icono" src="/img/icon_fv.png" height=120>
+                <h1>FILMVIEW</h1>
+                <p class="subtitle">Tu app de cine</p>
+            </div>
+        </section>
+
+        <section class="main container">
+        <div class="row">
+
+            <aside class="col-md-3 hidden-xs">
+                <div class="list-group">
+                    <a href="./access.html" class="list-group-item" id="iniciar_sesion_list">Iniciar Sesión</a>
+                    <a href="./register.html" class="list-group-item" id="registrarse_list">Registrarse</a>
+                    <a class="list-group-item" id="sesion_iniciada_list"></a>
+                    <a href="./index.html"class="list-group-item" id="cerrar_sesion_list">Cerrar Sesión</a>
+                </div>
+                <div class="list-group">
+                    <a class="list-group-item active">Estrenos</a>
+                    <a href="./index.html" class="list-group-item active">- España</a>
+                    <a href="#" class="list-group-item">- EEUU</a>
+                    <a href="#" class="list-group-item">Top votaciones</a>
+                    <a href="#" class="list-group-item">Críticas</a>
+                    <a href="#" class="list-group-item">Lo último</a>
+                </div>
+                
+            </aside>
+            
+
+            <section class="posts col-md-9">
+                <div class="titulos-peq">
+                    <ol class="breadcrumb">
+                            <li><a href="./index.html">Inicio</a></li>
+                            <li class="active">Estrenos</li>
+                            <li class="active">España</li>
+                    </ol>
+                </div>
+                <article class="post clearfix">
+                    <h2 class="text-center">
+                        ESTRENOS EN ESPAÑA
+                    </h2>
+                    <a href="./film5.html" class="thumb pull-left">
+                        <img class="img-thumbnail" src="img/the_godfather-529853536-large.jpg" alt="The Godfather">
+                    </a>
+                    <a href="./film6.html" class="thumb pull-left">
+                            <img class="img-thumbnail" src="img/the_godfather_part_ii-617901053-large.jpg" alt="The Godfather II">
+                    </a>
+                    <a href="./film7.html" class="thumb pull-left">
+                            <img class="img-thumbnail" src="img/12_angry_men-223926054-large.jpg" alt="12 Angry Men">
+                    </a>
+                    <a href="./film8.html" class="thumb pull-left">
+                            <img class="img-thumbnail" src="img/schindler_s_list-473662617-large.jpg" alt="Schindler List">
+                    </a>
+                    <a href="./film9.html" class="thumb pull-left">
+                            <img class="img-thumbnail" src="img/witness_for_the_prosecution-236651370-large.jpg" alt="Witness For The Prosecution">
+                    </a>
+                    <a href="./film10.html" class="thumb pull-left">
+                            <img class="img-thumbnail" src="img/city_lights-411568443-large.jpg" alt="City Lights">
+                    </a>
+                </article>  
+            </section>
+        </div>
+        </section> 
+        
+        <footer></footer>
+       
+        <script>
+            $("button#boton_buscar").click(function(){
+                document.location = './searchresult.html?text='+$('#texto_busqueda_titulo').val().replace(" ", "+");
+                });
+        </script>
+
+    <script>
+            $(document).ready(function(){
+            $.ajax({
+                    url:   'islogged.php',
+                    type:  'POST',
+                    dataType: 'text',
+                    success:  function (mensaje_islogged) {
+                        var infouser_array = JSON.parse(mensaje_islogged);
+ 		                //Asignamos valor a la variable iduser
+                        iduser = infouser_array[0];
+                        //msg_wcm_user="Bienvenido: "+ infouser_array[1];
+                        msg_wcm_user="Bienvenido: "+ infouser_array[1];
+                        $("#sesion_iniciada_list").html(msg_wcm_user);
+                        //$("#seccion_voto").html(mensaje_islogged);
+                        if (iduser!=""){
+                            document.getElementById("button_access_no_logged").style.display = "none";
+                            document.getElementById("iniciar_sesion_list").style.display = "none";
+                            document.getElementById("registrarse_list").style.display = "none";
+                        }else{
+                            document.getElementById("sesion_iniciada_list").style.display = "none";
+                            document.getElementById("cerrar_sesion_list").style.display = "none";
+                        }
+                        
+                }
+            });
+            });
+    </script>
+
+    <script>
+        $("#cerrar_sesion_list").click(function(){
+                    $.ajax({
+                    url:   'closesession.php',
+                    type:  'POST',
+                    dataType: 'text',
+                    success:  function (mensaje_closesession) {
+                        alert("Sesion cerrada"+mensaje_closesession);
+                        }
+                    });
+                    });
+    </script>
+    </body>
+</html>

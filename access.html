@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <title>FilmView</title>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/styles.css">
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navegacion">
+                            <span class="sr-only">Desplegar / Ocultar Menu</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="./index.html" class="navbar-brand">FilmView</a>
+                    </div>
+                    <!-- Inicia Menu -->
+                    <div class="collapse navbar-collapse" id="navegacion">
+                        <ul class="nav navbar-nav">
+                            <li><a href="./index.html">Inicio</a></li>
+                            <li class="active"><a href="./access.html">Acceso</a></li>
+                        </ul>
+                        <form action="" class="navbar-form navbar-right" role="search">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Buscar película" id="texto_busqueda_titulo">
+                            </div>
+                            <button type="button" class="btn btn-primary" id="boton_buscar">
+                                Buscar
+                            </button>
+                    </form>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <section class="jumbotron">
+            <div class="container">
+                <img class="icono" src="/img/icon_fv.png" height=120>
+                <h1>FILMVIEW</h1>
+                <p class="subtitle">Tu app de cine</p>
+            </div>
+        </section>
+
+        <section class="main container">
+        <div class="row">
+
+            <aside class="col-md-3 hidden-xs">
+                <div class="list-group">
+                    <a href="./access.html" class="list-group-item active">Iniciar Sesión</a>
+                    <a href="./register.html" class="list-group-item">Registrarse</a>
+                </div>
+                <div class="list-group">
+                    <a class="list-group-item">Estrenos</a>
+                    <a href="./index.html" class="list-group-item">- España</a>
+                    <a href="#" class="list-group-item">- EEUU</a>
+                    <a href="#" class="list-group-item">Top votaciones</a>
+                    <a href="#" class="list-group-item">Críticas</a>
+                    <a href="#" class="list-group-item">Lo último</a>
+                </div>
+                
+            </aside>
+            
+
+            <section class="posts col-md-9">
+                <div class="titulos-peq">
+                    <ol class="breadcrumb">
+                            <li><a href="./index.html">Inicio</a></li>
+                            <li class="active">Iniciar Sesión</li>
+                    </ol>
+                </div>
+
+                <article class="post clearfix">
+                        <h2 class="text-center">
+                            INICIAR SESIÓN
+                        </h2>
+
+                        <!---Formulario de inicio de sesión-->
+                          <form class="form-horizontal">
+                            <div class="form-group">
+                              <label class="control-label col-sm-4" for="nick">Nick/Alias</label>
+                                <div class="col-sm-4">
+                                    <input type="nick" class="form-control" id="nick" placeholder="Introduce el nick o alias">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-sm-4" for="pwd">Contraseña</label>
+                              <div class="col-sm-4">
+                                <input type="password" class="form-control" id="pwd" placeholder="Introduce la contraseña">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="col-sm-offset-5 col-sm-10">
+                                <button type="button" class="btn btn-default" id="boton_acceder">ACCEDER</button>
+                              </div>
+                            </div>
+                            <div class="estado-acceso" align="center" id="formulario-acceso"></div>
+                          </form> 
+                        <!---Fin Formulario de inicio de sesión-->
+
+                    </article>  
+
+            </section>
+        </div>
+        </section> 
+        
+        <footer></footer>
+
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+
+        <script>
+            $("button#boton_acceder").click(function(){
+                var parametros = {
+                        nick: $("#nick").val(),
+                        pwd: $("#pwd").val(),
+                };
+                $.ajax({
+                        data:  parametros,
+                        url:   'access.php',
+                        type:  'POST',
+                        dataType: 'text',
+                        success:  function (mensaje_access) {
+                            //$("#formulario-acceso").html(mensaje_access);
+                            document.location = './index.html';
+
+                    }
+                });
+                });
+
+        </script>
+        
+        <script>
+            $("button#boton_buscar").click(function(){
+                document.location = './searchresult.html?text='+$('#texto_busqueda_titulo').val().replace(" ", "+");
+                });
+        </script>
+    </body>
+</html>
