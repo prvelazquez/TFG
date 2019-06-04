@@ -1,0 +1,7 @@
+{
+    "liveServer.settings.donotShowInfoMsg": true,
+    "php.validate.executablePath": "D:/PHP/php.exe",
+    "php.validate.run": "onType",
+    "php.executablePath": "D:/PHP/php.exe",
+    "liveServer.settings.donotVerifyTags": true
+}
