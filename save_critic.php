@@ -18,6 +18,8 @@ $existecritica = (mysqli_num_rows($result) != 0);
 if(!$existecritica && $film_critic != ""){
   $sql = "INSERT INTO critics (id_film,id_user,critic) VALUES('$idfilm','$user','$film_critic')";
   $result = mysqli_query($connection, $sql);
+  //Se devuelve 0 para mostrar el botón BORRAR
+  echo '0';
   //echo 'Si no existe y el contenido de la critica no es vacio, se añade';
 }
 //Si existe y el nuevo valor es vacio, se borra
@@ -25,6 +27,8 @@ if($existecritica){
   if($film_critic == ""){
     $sql = "DELETE FROM critics WHERE critics.id_film='$idfilm' AND critics.id_user='$user'";
     $result = mysqli_query($connection, $sql);
+    //Se devuelve 1 para eliminar el botón BORRAR
+    echo '1';
     //echo 'Si existe y el nuevo valor es vacio, se borra';
 
   }
@@ -32,6 +36,8 @@ if($existecritica){
   else{
   $sql = "UPDATE critics SET critic = '$film_critic' WHERE critics.id_film='$idfilm' AND critics.id_user='$user'";
   $result = mysqli_query($connection, $sql);
+  //Se devuelve 0 para mostrar el botón BORRAR
+  echo '0';
   //echo 'Si no, se actualiza';
   }
 }

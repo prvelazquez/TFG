@@ -9,32 +9,38 @@
         <script type="text/javascript" src="/js/jquery.js"></script>
 
         <script>
-            //Obtenemos la query de la busqueda
-            var path = window.location.search;
-            //Expresion regular para comprobar que lo que viene tras searchresult.html es del tipo "?text="
-            var expreg = /^\?text=.*$/;
-            //Si la expresión cumple con la expresion regular 
-            if(expreg.test(path)){
-            //Obtenemos el texto de la busqueda
-                var texto_busqueda = path.split("?").pop().split("text=").pop();
-                //Llamada a search.php con el texto a buscar
+            //Llamada a islogged.php para buscar el usuario de la sesion y cargarle la info
+            $(window).bind("load",function(){
+            $.ajax({
+                url:   'islogged.php',
+                type:  'POST',
+                //Desactivamos llamada asíncrona para que obtenga el id del usuario antes de cargar el resto de elementos
+                async: false,
+                dataType: 'text',
+                success:  function (mensaje_islogged) {
+                    var infouser_array = JSON.parse(mensaje_islogged);
+                    //Asignamos valor a la variable film_spa_title
+                    iduser = infouser_array[0];                    
+            }
+            });
+            });
+                //Llamada a topvotes.php con el texto a buscar
                 $(window).bind("load",function(){
                 var parametros = {
-                        "texto_busqueda" : texto_busqueda,
+                        "n_results" : 10,
+                        "iduser" : iduser,
                 };
                 $.ajax({
                         data:  parametros,
-                        url:   'search.php',
+                        url:   'topvotes.php',
                         type:  'POST',
                         dataType: 'text',
-                        success:  function (mensaje_search) {
-                            $("#resultado_busqueda").html(mensaje_search);
-                            $("#texto_resultado_busqueda").html("RESULTADO DE LA BÚSQUEDA \""+texto_busqueda.replace(/\+/g, ' ')+"\"");
+                        success:  function (mensaje_topvotes) {
+                            $("#resultado_topvotes").html(mensaje_topvotes);
                     }
                 });
 
                 })
-            };
         </script>
     </head>
     <body>
@@ -85,7 +91,7 @@
                     <a href="./access.html" class="list-group-item" id="iniciar_sesion_list">Iniciar Sesión</a>
                     <a href="./register.html" class="list-group-item" id="registrarse_list">Registrarse</a>
                     <a class="list-group-item" id="sesion_iniciada_list"></a>
-                    <a href="./topvotes.html" class="list-group-item" id="topvotes_list">Top votaciones</a>
+                    <a href="./topvotes.html" class="list-group-item active" id="topvotes_list">Top votaciones</a>
                     <a href="./critics.html" class="list-group-item" id="critics_list">Críticas</a>
                     <a href="./index.html"class="list-group-item" id="cerrar_sesion_list">Cerrar Sesión</a>
                 </div>
@@ -103,19 +109,17 @@
                 <div class="titulos-peq">
                     <ol class="breadcrumb">
                             <li><a href="./index.html">Inicio</a></li>
-                            <li class="active">Resultado de la búsqueda</li>
+                            <li class="active">Top votaciones</li>
                     </ol>
                 </div>
 
                 <article class="post clearfix">
-                        <h2 class="text-center" id="texto_resultado_busqueda">
-                            RESULTADO DE LA BÚSQUEDA
+                        <h2 class="text-center" id="texto_resultado_topvotes">
+                            RANKING DE VOTOS
                         </h2>
 
                         <!---Resultado de la busqueda-->
-                        <ul class="list-group" id="resultado_busqueda">
-
-                          </ul>
+                        <ul class="list-group" id="resultado_topvotes"></ul>
                         <!---Fin Resultado de la busqueda-->
 
                     </article>  

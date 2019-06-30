@@ -9,32 +9,37 @@
         <script type="text/javascript" src="/js/jquery.js"></script>
 
         <script>
-            //Obtenemos la query de la busqueda
-            var path = window.location.search;
-            //Expresion regular para comprobar que lo que viene tras searchresult.html es del tipo "?text="
-            var expreg = /^\?text=.*$/;
-            //Si la expresión cumple con la expresion regular 
-            if(expreg.test(path)){
-            //Obtenemos el texto de la busqueda
-                var texto_busqueda = path.split("?").pop().split("text=").pop();
-                //Llamada a search.php con el texto a buscar
+            //Llamada a islogged.php para buscar el usuario de la sesion y cargarle la info
+            $(window).bind("load",function(){
+            $.ajax({
+                url:   'islogged.php',
+                type:  'POST',
+                //Desactivamos llamada asíncrona para que obtenga el id del usuario antes de cargar el resto de elementos
+                async: false,
+                dataType: 'text',
+                success:  function (mensaje_islogged) {
+                    var infouser_array = JSON.parse(mensaje_islogged);
+                    //Asignamos valor a la variable film_spa_title
+                    iduser = infouser_array[0];                    
+            }
+            });
+            });
+                //Llamada a lastfilms.php con el texto a buscar
                 $(window).bind("load",function(){
                 var parametros = {
-                        "texto_busqueda" : texto_busqueda,
+                        "n_results" : 4,
                 };
                 $.ajax({
                         data:  parametros,
-                        url:   'search.php',
+                        url:   'lastfilms.php',
                         type:  'POST',
                         dataType: 'text',
-                        success:  function (mensaje_search) {
-                            $("#resultado_busqueda").html(mensaje_search);
-                            $("#texto_resultado_busqueda").html("RESULTADO DE LA BÚSQUEDA \""+texto_busqueda.replace(/\+/g, ' ')+"\"");
+                        success:  function (mensaje_lastfilms) {
+                            $("#resultado_lastfilms").html(mensaje_lastfilms);
                     }
                 });
 
                 })
-            };
         </script>
     </head>
     <body>
@@ -93,7 +98,7 @@
                     <a href="./index.html" class="list-group-item">Estrenos</a>
                     <a href="./index.html" class="list-group-item">- España</a>
                     <a href="./indexusa.html" class="list-group-item">- EEUU</a>
-                    <a href="./lastfilms.html" class="list-group-item">Lo último</a>
+                    <a href="./lastfilms.html" class="list-group-item active">Lo último</a>
                 </div>
                 
             </aside>
@@ -103,19 +108,18 @@
                 <div class="titulos-peq">
                     <ol class="breadcrumb">
                             <li><a href="./index.html">Inicio</a></li>
-                            <li class="active">Resultado de la búsqueda</li>
+                            <li class="active">Lo último</li>
                     </ol>
                 </div>
 
                 <article class="post clearfix">
-                        <h2 class="text-center" id="texto_resultado_busqueda">
-                            RESULTADO DE LA BÚSQUEDA
+                        <h2 class="text-center" id="texto_resultado_lastfilms">
+                            ÚLTIMAS PELÍCULAS
                         </h2>
 
                         <!---Resultado de la busqueda-->
-                        <ul class="list-group" id="resultado_busqueda">
-
-                          </ul>
+                        <ul class="list-group" id="resultado_lastfilms">
+                        </ul>
                         <!---Fin Resultado de la busqueda-->
 
                     </article>  

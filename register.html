@@ -52,18 +52,20 @@
         <div class="row">
 
             <aside class="col-md-3 hidden-xs">
-                <div class="list-group">
-                    <a href="./access.html" class="list-group-item">Iniciar Sesión</a>
-                    <a href="./register.html" class="list-group-item active">Registrarse</a>
-                </div>
-                <div class="list-group">
-                    <a class="list-group-item">Estrenos</a>
-                    <a href="./index.html" class="list-group-item">- España</a>
-                    <a href="#" class="list-group-item">- EEUU</a>
-                    <a href="#" class="list-group-item">Top votaciones</a>
-                    <a href="#" class="list-group-item">Críticas</a>
-                    <a href="#" class="list-group-item">Lo último</a>
-                </div>
+                    <div class="list-group">
+                            <a href="./access.html" class="list-group-item" id="iniciar_sesion_list">Iniciar Sesión</a>
+                            <a href="./register.html" class="list-group-item active" id="registrarse_list">Registrarse</a>
+                            <a class="list-group-item" id="sesion_iniciada_list"></a>
+                            <a href="./topvotes.html" class="list-group-item" id="topvotes_list">Top votaciones</a>
+                            <a href="./critics.html" class="list-group-item" id="critics_list">Críticas</a>
+                            <a href="./index.html"class="list-group-item" id="cerrar_sesion_list">Cerrar Sesión</a>
+                        </div>
+                        <div class="list-group">
+                            <a href="./index.html" class="list-group-item">Estrenos</a>
+                            <a href="./index.html" class="list-group-item">- España</a>
+                            <a href="./indexusa.html" class="list-group-item">- EEUU</a>
+                            <a href="./lastfilms.html" class="list-group-item">Lo último</a>
+                        </div>
                 
             </aside>
             
@@ -172,9 +174,39 @@
 
             <script>
                 $("button#boton_buscar").click(function(){
-                    document.location = './searchresult.html?text='+$('#texto_busqueda_titulo').val().replace(" ", "+");
+                    document.location = './searchresult.html?text='+$('#texto_busqueda_titulo').val().replace(/ /g, '+');
                     });
             </script>
+
+    <script>
+        $(document).ready(function(){
+        $.ajax({
+                url:   'islogged.php',
+                type:  'POST',
+                dataType: 'text',
+                success:  function (mensaje_islogged) {
+                    var infouser_array = JSON.parse(mensaje_islogged);
+                    //Asignamos valor a la variable iduser
+                    iduser = infouser_array[0];
+                    //msg_wcm_user="Bienvenido: "+ infouser_array[1];
+                    msg_wcm_user="Bienvenido: "+ infouser_array[1];
+                    $("#sesion_iniciada_list").html(msg_wcm_user);
+                    //$("#seccion_voto").html(mensaje_islogged);
+                    if (iduser!=""){
+                        document.getElementById("button_access_no_logged").style.display = "none";
+                        document.getElementById("iniciar_sesion_list").style.display = "none";
+                        document.getElementById("registrarse_list").style.display = "none";
+                    }else{
+                        document.getElementById("sesion_iniciada_list").style.display = "none";
+                        document.getElementById("cerrar_sesion_list").style.display = "none";
+                        document.getElementById("topvotes_list").style.display = "none";
+                        document.getElementById("critics_list").style.display = "none";
+                    }
+                    
+            }
+        });
+        });
+    </script>
 
     </body>
 </html>

@@ -48,6 +48,9 @@
                         $("#form_country").html(capcountry);
                         $("#form_duration").html(film_array[0].duration_min);
                         $("#form_director").html(capdirector);
+                        //Carga dinámica de la imagen
+                        imagfilm = "<img class=\"img-thumbnail\" src=\"img/film"+filmid+".jpg\" alt=\""+caporig_title+"\">";
+                        $("#image_film").html(imagfilm);
                 }
             });
             });
@@ -126,9 +129,30 @@
                     dataType: 'text',
                     success:  function (mensaje_infocritic) {
                         $("#film_critic").html(mensaje_infocritic);
+                        if (mensaje_infocritic==""){
+                            document.getElementById("boton_borrar_critica").style.display = "none";
+                        }
                 }
             });
             });
+
+            //Llamada a infoothercritics.php
+            $(window).bind("load",function(){
+            var parametros = {
+                    "id_film" : filmid,
+                    "id_user": iduser,
+            };
+            $.ajax({
+                    data:  parametros,
+                    url:   'infoothercritics.php',
+                    type:  'POST',
+                    dataType: 'text',
+                    success:  function (mensaje_infoothercritics) {
+                        $("#film_othercritics").html(mensaje_infoothercritics);
+                }
+            });
+            });
+
 
             </script>
 
@@ -181,15 +205,15 @@
                         <a href="./access.html" class="list-group-item" id="iniciar_sesion_list">Iniciar Sesión</a>
                         <a href="./register.html" class="list-group-item" id="registrarse_list">Registrarse</a>
                         <a class="list-group-item" id="sesion_iniciada_list"></a>
+                        <a href="./topvotes.html" class="list-group-item" id="topvotes_list">Top votaciones</a>
+                        <a href="./critics.html" class="list-group-item" id="critics_list">Críticas</a>
                         <a href="./index.html"class="list-group-item" id="cerrar_sesion_list">Cerrar Sesión</a>
                 </div>
                 <div class="list-group">
-                    <a class="list-group-item">Estrenos</a>
+                    <a href="./index.html" class="list-group-item">Estrenos</a>
                     <a href="./index.html" class="list-group-item">- España</a>
-                    <a href="#" class="list-group-item">- EEUU</a>
-                    <a href="#" class="list-group-item">Top votaciones</a>
-                    <a href="#" class="list-group-item">Críticas</a>
-                    <a href="#" class="list-group-item">Lo último</a>
+                    <a href="./indexusa.html" class="list-group-item">- EEUU</a>
+                    <a href="./lastfilms.html" class="list-group-item">Lo último</a>
                 </div>
                 
             </aside>
@@ -211,8 +235,7 @@
                     <!-- FIN Recuadro de voto -->   
                     <h2 id="principal_title_spa" class="text-center">
                     </h2>
-                    <a class="thumb pull-left">
-                            <img class="img-thumbnail" src="img/pulp_fiction-210382116-large.jpg" alt="City Lights">
+                    <a class="thumb pull-left" id="image_film">
                     </a>
                     <div class="container">
                         <div class="row">
@@ -248,14 +271,19 @@
                         </div>
                     </div>
                     <form id="form_critica">
-                            <!-- Recuadro de critica -->     
-                            <div class="form-group" id="seccion_critica">
-                              <dt class="titulo-search" id="seccion_critica_titulo">Critica</dt>
-                              <textarea class="form-control" id="film_critic" rows="3"></textarea>
-                            </div>
-                            <!-- FIN Recuadro de critica -->
-                            <button type="button" class="btn btn-default" id="boton_guardar_critica">GUARDAR</button>     
+                        <div class="form-group" id="seccion_critica">
+                            <dt class="titulo-search" id="seccion_critica_titulo">Critica</dt>
+                            <textarea class="form-control" id="film_critic" rows="3"></textarea>
+                          </div>
+                          <!-- FIN Recuadro de critica -->
+                          <button type="button" class="btn btn-default" id="boton_guardar_critica">GUARDAR</button>
+                          <button type="button" class="btn btn-default" id="boton_borrar_critica">BORRAR</button>     
                     </form>
+
+                    <!-- Contenido criticas -->
+                    <form id="film_othercritics"></form>
+                    <!-- FIN Contenido criticas -->
+                    
                 </article>  
             </section>
         </div>
@@ -264,7 +292,7 @@
 
         <script>
             $("button#boton_buscar").click(function(){
-                document.location = './searchresult.html?text='+$('#texto_busqueda_titulo').val().replace(" ", "+");
+                document.location = './searchresult.html?text='+$('#texto_busqueda_titulo').val().replace(/ /g, '+');
                 });
         </script>
 
@@ -307,14 +335,47 @@
                     url:   'save_critic.php',
                     type:  'POST',
                     dataType: 'text',
-                    success:  function (mensaje_register) {
-                        //$("#seccion_critica_titulo").html(mensaje_register);
-
+                    success:  function (mensaje_save_critic) {
+                        if (mensaje_save_critic=="0"){
+                        document.getElementById("boton_borrar_critica").style.display = "";
+                        //$("#seccion_critica_titulo").html(mensaje_save_critic);
+                        }else if (mensaje_save_critic=="1"){
+                        document.getElementById("boton_borrar_critica").style.display = "none";
+                        //$("#seccion_critica_titulo").html(mensaje_save_critic);
+                        }
+                        location.reload();
                 }
             });
             });
 
     </script>
+        <script>
+            $("button#boton_borrar_critica").click(function(){
+                var parametros = {
+                        user: iduser,
+                        idfilm: filmid,
+                        film_critic: "",
+                };
+                $.ajax({
+                        data:  parametros,
+                        url:   'save_critic.php',
+                        type:  'POST',
+                        dataType: 'text',
+                        success:  function (mensaje_save_critic) {
+                            if (mensaje_save_critic=="0"){
+                            document.getElementById("boton_borrar_critica").style.display = "";
+                            //$("#seccion_critica_titulo").html(mensaje_save_critic);
+                            }else if (mensaje_save_critic=="1"){
+                            document.getElementById("boton_borrar_critica").style.display = "none";
+                            //$("#seccion_critica_titulo").html(mensaje_save_critic);
+                            location.reload();
+                            }
+    
+                    }
+                });
+                });
+    
+        </script>
     
     <script>
         $(document).ready(function(){
@@ -337,6 +398,8 @@
                     }else{
                         document.getElementById("sesion_iniciada_list").style.display = "none";
                         document.getElementById("cerrar_sesion_list").style.display = "none";
+                        document.getElementById("topvotes_list").style.display = "none";
+                        document.getElementById("critics_list").style.display = "none";
                         document.getElementById("form_critica").style.display = "none";
                         document.getElementById("seccion_voto").style.display = "none";
                     }
